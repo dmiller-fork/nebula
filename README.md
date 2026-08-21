@@ -49,3 +49,10 @@ make data
 ```
 du -sh data
 ```
+
+## Running tests
+	- jump into the tests folder to run tests individually
+	- alternatively, use make:
+```
+make run_all
+```
