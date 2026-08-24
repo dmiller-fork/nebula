@@ -31,7 +31,7 @@ class InvertedIndex:
 	# Alternate Constructor/Loader
 	@classmethod
 	def from_save(cls, savefile):
-		pass
+		pass 
 
 	# Create Save File
 	def save(self):
@@ -47,4 +47,15 @@ class InvertedIndex:
 class SearchResults:
 	# Primary Constructor
 	def __init__(self):
-		self.results = {}
+		self.results = defaultdict(lambda: defaultdict(int))
+
+	# Alternate Constructor/Loader
+	@classmethod
+	def query_index(cls, index, query):
+		results = cls()
+		query_words = query.split()
+		for word in query_words:
+			if word in index.index:
+				for (document, position), count in index.index[word].items():
+					results.results[document][word] += count
+		return results
