@@ -1,3 +1,4 @@
+import string
 from collections import defaultdict
 
 # this file starts with only two classes: 
@@ -26,6 +27,7 @@ class InvertedIndex:
 				words = line.split()
 
 				for word in words:
+					word = word.rstrip(string.punctuation)
 					index.index[word][(doc, line_number)] += 1
 		return index
 	# Alternate Constructor/Loader
