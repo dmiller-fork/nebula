@@ -9,8 +9,8 @@ Upload a one-page project proposal that includes:
 ## a brief description of the project,
 	- a search engine with separate filter words and snippet words
 ## the main tasks,
-	- corpus intake -> tokenize words in corpus-> build inverted index & trie
-	- tokenize query -> inverted index lookup -> calculate TF-IDF -> k-rank heap & full sort 
+	- corpus intake (DONE-> tokenize words in corpus (DONE)-> build inverted index (DONE) & trie (TODO)
+	- tokenize query TODO) -> inverted index lookup (DONE) -> calculate TF-IDF  (TODO) -> k-rank heap & full sort 
 	- extract keyword window -> rank windows -> return top snippet each doc
 	- create benchmarks (define query and relevant snippets, % relevant/precision)
 	- experiments:

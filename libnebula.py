@@ -1,10 +1,19 @@
 import string
 from collections import defaultdict
+import heapq
+import math
 
 # this file starts with only two classes: 
+
 # InvertedIndex
 # SearchResults
 
+# UPDATE adding two classes
+# TFIDFcalc
+# KRankHeap
+
+# GLOBALS
+PUNCTUATION = string.punctuation + "“”‘’"
 
 # Alternate Constructor decorators from section 8.16 in Python Cookbook 2013-Beazley
 class InvertedIndex:
@@ -22,7 +31,6 @@ class InvertedIndex:
 	@classmethod
 	def from_docs(cls, docs):
 		index = cls()
-		PUNCTUATION = string.punctuation + "“”‘’"
 	
 		for doc, text in docs.items():
 			lines = text.splitlines()
@@ -81,7 +89,40 @@ class SearchResults:
 		results = cls()
 		query_words = query.split()
 		for word in query_words:
+			word = word.strip(PUNCTUATION).lower()
 			if word in index.index:
 				for (document, position), count in index.index[word].items():
 					results.results[document][word] += count
 		return results
+
+class TFIDFcalc:
+	def __init__(self, books):
+		self.doc_word_count = {
+			book: len(text.split())
+			for book, text in books.items()
+		}
+	@staticmethod
+	def calc_tf(doc_term_count, doc_word_count):
+		return doc_term_count / doc_word_count
+
+	@staticmethod
+	def calc_idf(corpus_size, results_size):
+		return math.log(corpus_size / results_size)
+
+"""
+class KRankHeap:
+	def __init__(self, k):
+		self.k = k
+		self.heap = []
+
+	def add_result(self, item, rank):
+		entry = (rank, item)
+
+		if len(self.heap) < self.k:
+			heapq.heappush(self.heap, entry)
+		elif rank > self.heap[0][0]:
+			heapq.heapreplace(self.heap, entry)
+
+	def list_results(self):
+		return sorted(self.heap, reverse=True)
+"""
