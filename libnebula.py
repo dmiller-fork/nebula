@@ -79,9 +79,23 @@ class InvertedIndex:
 		return output
 
 class SearchResults:
+	"""
+	SearchResults is a projection of the inverted index
+	that only includes the query terms.
+
+	The tuple key is unpacked a three level dictionary:
+	search_results.resultsterm][bookid][line] = count
+
+	Note. This is a reference copy, so READ ONLY
+	Do Not Modify search results or you will modify inverted index
+	"""
 	# Primary Constructor
 	def __init__(self):
-		self.results = defaultdict(lambda: defaultdict(int))
+		self.results = defaultdict(
+			lambda: defaultdict(
+				lambda: defaultdict(int)
+			)
+		)
 
 	# Alternate Constructor/Loader
 	@classmethod
@@ -91,25 +105,37 @@ class SearchResults:
 		for word in query_words:
 			word = word.strip(PUNCTUATION).lower()
 			if word in index.index:
-				for (document, position), count in index.index[word].items():
-					results.results[document][word] += count
+				for (bookid, line_number), count in index.index[word].items():
+					results.results[word][bookid][line_number] = count
 		return results
 
 class TFIDFcalc:
+	""" this class is necessary because
+		there are many definitions of term frequency tf
+		and inverse document frequency idf.
+		in the def below tf is normalized by doc_length
+		and idf is a log calculation log(N/n),
+		where N is total number of docs, and
+		n is number of docs in which query term t_k occurs,
+		where k is an iterator for each query term.
+	"""
 	def __init__(self, books):
-		self.doc_word_count = {
-			book: len(text.split())
-			for book, text in books.items()
+		self.book_lengths = {
+			bookid: len(text.split())
+			for bookid, text in books.items()
 		}
-	@staticmethod
-	def calc_tf(doc_term_count, doc_word_count):
-		return doc_term_count / doc_word_count
+		self.total_number_of_docs = len(books)
 
 	@staticmethod
-	def calc_idf(corpus_size, results_size):
-		return math.log(corpus_size / results_size)
+	def calc_tf(freq_of_term, doc_length):
+		return freq_of_term / doc_length 
 
-"""
+	@staticmethod
+	def calc_idf(number_of_docs_w_term, total_number_of_docs):
+		return math.log(total_number_of_docs / number_of_docs_w_term)
+
+
+
 class KRankHeap:
 	def __init__(self, k):
 		self.k = k
@@ -125,4 +151,4 @@ class KRankHeap:
 
 	def list_results(self):
 		return sorted(self.heap, reverse=True)
-"""
+

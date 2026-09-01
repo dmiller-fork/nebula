@@ -1,17 +1,13 @@
 import sys
-import math
 from pathlib import Path
+from collections import defaultdict
 
 sys.path.append(str(Path(__file__).parent.parent))
 
 from libnebula import InvertedIndex
 from libnebula import SearchResults
 from libnebula import TFIDFcalc
-# books = {
-#    "test": "the the the\nfoo the\nbar",
-#	"foo": "the boo is a foo\nbar",
-#	"bar": "treasure is here"
-# }
+from libnebula import KRankHeap
 
 books = {}
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -22,30 +18,31 @@ for file in DATA_DIR.glob("*.txt"):
 
 if __name__ == "__main__":
 	index = InvertedIndex.from_docs(books)
-	query = "treasure Jim"
+	query = "treasure the"
+	print("query is two terms:", query)
 	search_results = SearchResults.query_index(index, query);
-	# 4 parameters: 
-	# doc_word_count, doc_term_count
-	# corpus_size, search_results_size
-	corpus_size = len(books)
-
+	# print(search_results.results)
+	# tfidf object creates doc_lengths and total_number_of_docs
 	tfidf = TFIDFcalc(books) # this gives setup for doc_word_count
-	for book, terms in search_results.results.items():
-		book_score = 0
 
-		for term, term_count in terms.items():
-			doc_word_count = tfidf.doc_word_count[book]
+	# now run triple for loop 
+	book_scores = defaultdict(float)
+	for term, books in search_results.results.items():
+		df = len(books)
+		idf = tfidf.calc_idf(df, tfidf.total_number_of_docs)
+		## small optimization the query term "the" gets filtered out here
+		## because "the" is in every document  log(total/total) -> log(1) = 0
+		if idf == 0:
+			continue
+		for bookid, lines in books.items():
+			term_count = sum(lines.values())
+			tf = tfidf.calc_tf(term_count, tfidf.book_lengths[bookid])
+			book_scores[bookid] += tf * idf
+	# for bookid, score in book_scores.items():
+		# print(bookid, score)
+	k = 5 
+	rank_heap = KRankHeap(k)
 
-			tf = tfidf.calc_tf(term_count, doc_word_count)
-
-			term_results_size = len({doc for doc, line in index.index[term]})
-			idf = tfidf.calc_idf(corpus_size, term_results_size)
-
-			book_score += tf * idf
-		print(
-			term,
-			corpus_size,
-			term_results_size,
-			math.log(corpus_size / term_results_size)
-		)
-		print(book, book_score)
+	for bookid, score in book_scores.items():
+		rank_heap.add_result(bookid, score)
+	print(rank_heap.list_results())
