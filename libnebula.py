@@ -5,12 +5,17 @@ import math
 
 # this file starts with only two classes: 
 
-# InvertedIndex
-# SearchResults
+## InvertedIndex
+## SearchResults
 
 # UPDATE adding two classes
-# TFIDFcalc
-# KRankHeap
+
+## TFIDFcalc
+## KRankHeap
+
+# Last step the presenter
+
+## RankedResults
 
 # GLOBALS
 PUNCTUATION = string.punctuation + "“”‘’"
@@ -152,3 +157,28 @@ class KRankHeap:
 	def list_results(self):
 		return sorted(self.heap, reverse=True)
 
+class RankedResults:
+	""" This class compiles search results and rank_scores into 
+	score_list->books_dict->terms_dict->lines_dict->count
+	
+	Note. This is a reference copy, so READ ONLY
+    Do Not Modify Ranked results or you will modify inverted index
+	"""
+	def __init__(self, search_results, rank_scores):
+		self.ranked_results = []
+
+		for score, book in rank_scores:
+			results = {}
+
+			for term in search_results:
+				if book in search_results[term]:
+					for line, count in search_results[term][book].items():
+						results[(term, line)] = count
+
+			self.ranked_results.append({book: results})
+	"""
+	def sliceSnippet(self, window):
+		for book in self.ranked_results.values():
+			highest_count = 0
+			for term
+		"""	
