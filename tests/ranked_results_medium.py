@@ -52,11 +52,14 @@ if __name__ == "__main__":
 	ranked_results.getSnippetStarts(window_size, terms)
 
 	ranked_results.generateSnippets(books, window_size);
-	for snippet_dict in ranked_results.snippets:
+	for i, snippet_dict in enumerate(ranked_results.snippets):
 		for book_name, snippet in snippet_dict.items():
-			print("*********")
-			print(book_name)
-				
+			print(" ")
+			title = ranked_results.get_title(books[book_name])
+			print(f"{i+1}. {title}") 
+			print("----------")
 			lines = snippet.split("\n")
 			for line in lines:
 				print(line)
+		print(" ")
+		print(" ")

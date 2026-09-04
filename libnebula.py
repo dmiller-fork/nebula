@@ -221,3 +221,9 @@ class RankedResults:
 				self.snippets.append({
 					book: "\n".join(snippet)
 				})
+	@staticmethod
+	def get_title(book_text):
+		lines = book_text.splitlines()
+		for line in lines:
+			if line.startswith("Title:"):
+				return line.removeprefix("Title:").strip()
