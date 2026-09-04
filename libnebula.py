@@ -74,7 +74,7 @@ class InvertedIndex:
 
 	def filter_by_freq(self):
 		self.index = {word: self.index[word] for word in self.words_by_freq}
-    
+	
 	def __str__(self):
 		output = ""
 
@@ -159,26 +159,65 @@ class KRankHeap:
 
 class RankedResults:
 	""" This class compiles search results and rank_scores into 
-	score_list->books_dict->terms_dict->lines_dict->count
+	score_list->books_dict->list of tuples (term, line, count)
 	
 	Note. This is a reference copy, so READ ONLY
-    Do Not Modify Ranked results or you will modify inverted index
+	Do Not Modify Ranked results or you will modify inverted index
 	"""
 	def __init__(self, search_results, rank_scores):
 		self.ranked_results = []
-
+		self.snippets = []
 		for score, book in rank_scores:
-			results = {}
+			results = []
 
 			for term in search_results:
 				if book in search_results[term]:
 					for line, count in search_results[term][book].items():
-						results[(term, line)] = count
-
+						results.append((term, line, count))
+			results.sort(key=lambda x: x[1]) #sorts tuples by line number
 			self.ranked_results.append({book: results})
-	"""
-	def sliceSnippet(self, window):
-		for book in self.ranked_results.values():
-			highest_count = 0
-			for term
-		"""	
+
+	def getSnippetStarts(self, window_size, terms):
+		for book_dict in self.ranked_results:
+			for book, results in book_dict.items():
+
+				highest_count = 0
+				highest_starting_line_tuple = (0, 0, 0)
+
+				for i, (term, line, count) in enumerate(results):
+					if term in terms:
+						start_tuple = (term, line, count)
+						start_line = line
+						window_count = 0
+
+						for term, line, count in results[i:]:
+							if line > start_line + window_size:
+								break
+
+							if term in terms:
+								window_count += count
+
+						if window_count > highest_count:
+							highest_count = window_count
+							highest_starting_line_tuple = start_tuple
+			book_dict[book] = highest_starting_line_tuple
+			book = highest_starting_line_tuple
+		
+	def generateSnippets(self, books, window_size):
+
+		for book_dict in self.ranked_results:
+			for book, start_tuple in book_dict.items():
+
+				if start_tuple == (0, 0, 0):
+					self.snippets.append({
+						book: "no snippets found"
+					})
+					continue
+
+				start_line = start_tuple[1]
+				lines = books[book].splitlines()
+				snippet = lines[start_line - 1:start_line - 1 + window_size]
+
+				self.snippets.append({
+					book: "\n".join(snippet)
+				})

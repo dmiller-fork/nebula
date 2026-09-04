@@ -9,18 +9,13 @@ from libnebula import SearchResults
 from libnebula import TFIDFcalc
 from libnebula import KRankHeap
 from libnebula import RankedResults
-books = {
-    "book1": "the the the\nfoo the\nbar",
-	"book2": "the boo is a foo\nbar",
-	"book3": "treasure is here\n treasure"
-}
 
-# books = {}
+books = {}
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data" / "gutenberg"
 
-# for file in DATA_DIR.glob("*.txt"):
-#	books[file.stem] = file.read_text()
+for file in DATA_DIR.glob("*.txt"):
+	books[file.stem] = file.read_text()
 
 if __name__ == "__main__":
 	index = InvertedIndex.from_docs(books)
@@ -52,13 +47,16 @@ if __name__ == "__main__":
 	
 	#Ranked Results logic
 	ranked_results = RankedResults(search_results.results, rank_heap.heap)
-	print(ranked_results.ranked_results)
 	window_size = 5
 	terms = ["treasure"]
 	ranked_results.getSnippetStarts(window_size, terms)
-	print("here")
 
-	print(ranked_results.ranked_results)
-	print(books)
 	ranked_results.generateSnippets(books, window_size);
-	print(ranked_results.snippets)
+	for snippet_dict in ranked_results.snippets:
+		for book_name, snippet in snippet_dict.items():
+			print("*********")
+			print(book_name)
+				
+			lines = snippet.split("\n")
+			for line in lines:
+				print(line)
