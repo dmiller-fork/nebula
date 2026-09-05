@@ -17,6 +17,10 @@ import math
 
 ## RankedResults
 
+# Trie as well
+## TrieNode
+## Trie
+
 # GLOBALS
 PUNCTUATION = string.punctuation + "“”‘’"
 
@@ -227,3 +231,55 @@ class RankedResults:
 		for line in lines:
 			if line.startswith("Title:"):
 				return line.removeprefix("Title:").strip()
+
+class TrieNode:
+	def __init__(self):
+		self.children = {}
+		self.is_word = False
+
+
+class Trie:
+	def __init__(self):
+		self.root = TrieNode()
+
+	def insert(self, word):
+		node = self.root
+
+		for char in word:
+			if char not in node.children:
+				node.children[char] = TrieNode()
+			node = node.children[char]
+
+		node.is_word = True
+
+	def contains(self, word):
+		node = self.root
+
+		for char in word:
+			if char not in node.children:
+				return False
+			node = node.children[char]
+
+		return node.is_word
+	def words_with_stem(self, stem):
+		node = self.root
+
+		# Find the node corresponding to the stem
+		for char in stem:
+			if char not in node.children:
+				return []
+			node = node.children[char]
+
+		# Collect words below that node
+		words = []
+
+		def collect(node, prefix):
+			if node.is_word:
+				words.append(prefix)
+
+			for char, child in node.children.items():
+				collect(child, prefix + char)
+
+		collect(node, stem)
+
+		return words
