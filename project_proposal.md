@@ -46,3 +46,6 @@ Upload a one-page project proposal that includes:
 ## decide on whether you want test and validation data
 ## everyone must present something (both mert and daniel, on tuesday)
  - from week 7
+
+### New Thing
+I want to do a ParseQuery class that essentially looks for two special characters at the end of a query term one is '!', which means it is a filter word, and one is '$', which uses the trie to fill in query terms.

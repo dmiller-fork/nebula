@@ -240,10 +240,26 @@ class TrieNode:
 
 class Trie:
 	def __init__(self):
-		self.root = TrieNode()
+		self.trie = TrieNode()
+	
+	# Alternate Constructor/Loader
+	@classmethod
+	def from_docs(cls, docs):
+		trie = cls()
+
+		for doc, text in docs.items():
+			lines = text.splitlines()
+
+			for line_number, line in enumerate(lines, start=1):
+				words = line.split()
+
+				for word in words:
+					word = word.strip(PUNCTUATION).lower()
+					trie.insert(word)
+		return trie
 
 	def insert(self, word):
-		node = self.root
+		node = self.trie
 
 		for char in word:
 			if char not in node.children:
@@ -253,7 +269,7 @@ class Trie:
 		node.is_word = True
 
 	def contains(self, word):
-		node = self.root
+		node = self.trie
 
 		for char in word:
 			if char not in node.children:
@@ -262,7 +278,7 @@ class Trie:
 
 		return node.is_word
 	def words_with_stem(self, stem):
-		node = self.root
+		node = self.trie
 
 		# Find the node corresponding to the stem
 		for char in stem:
