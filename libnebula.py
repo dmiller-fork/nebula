@@ -143,8 +143,6 @@ class TFIDFcalc:
 	def calc_idf(number_of_docs_w_term, total_number_of_docs):
 		return math.log(total_number_of_docs / number_of_docs_w_term)
 
-
-
 class KRankHeap:
 	def __init__(self, k):
 		self.k = k

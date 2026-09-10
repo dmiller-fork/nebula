@@ -1,4 +1,17 @@
 # Getting started
+	- clone the repo
+	- go into the scripts folder and grant execution permission to download
+	- download the files using make
+	- then run the program, using the following commands
+```
+cd scripts
+chmod +x download_gutenberg_large.sh
+cd ..
+make large
+python nebula
+```
+# developers only
+
 ## setting up your environment
 	- create this file .git/hooks/pre-commit
 ```

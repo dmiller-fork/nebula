@@ -12,5 +12,8 @@ test:
 data:
 	./scripts/download_gutenberg_data.sh
 
+large:
+	./scripts/download_gutenberg_large.sh
+
 clean:
 	rm -f data/gutenberg/*.txt
