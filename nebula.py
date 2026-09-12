@@ -93,8 +93,8 @@ def main():
 			for book_name, snippet in snippet_dict.items():
 				print(" ")
 				title = ranked_results.get_title(books[book_name])
-				print(f"{i+1}. {title}")
-				print("----------")
+				print(f"{i+1}. [{book_name}:{ranked_results.ranked_results[i][book_name][1]}] {title}")
+				print("----------------------------------------------------------------------")
 				lines = snippet.split("\n")
 				for line in lines:
 					print(line)

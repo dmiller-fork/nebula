@@ -8,8 +8,23 @@ cd scripts
 chmod +x download_gutenberg_large.sh
 cd ..
 make large
-python nebula
+python3 nebula
 ```
+	- note `make large` command is 1000 docs
+	- it will take 5 to 30 minutes to download docs
+	- about 3-8 minutes to build inverted index
+	- and .5-2 seconds to run queries
+	- if this is to slow, use `make data` instead for only 30 docs
+```
+cd scripts
+chmod +x download_gutenberg_data.sh
+cd ..
+make data
+python3 nebula
+```
+	- you can always start over with `make clean`
+	- type `exit` or `quit` to exit program
+
 # developers only
 
 ## setting up your environment

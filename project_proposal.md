@@ -49,3 +49,9 @@ Upload a one-page project proposal that includes:
 
 ### New Thing
 I want to do a ParseQuery class that essentially looks for two special characters at the end of a query term one is '!', which means it is a filter word, and one is '$', which uses the trie to fill in query terms.
+
+### Future steps
+- add [book_id:line_no] in search results
+- the final step is scaling, it is kind of slow w 997 docs, 492M
+- doing the full corpus of 80k books is a hard problem
+- probably requires implenting saving the index
